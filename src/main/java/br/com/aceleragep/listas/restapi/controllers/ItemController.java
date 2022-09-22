@@ -21,7 +21,11 @@ import br.com.aceleragep.listas.restapi.entities.ItemEntity;
 import br.com.aceleragep.listas.restapi.entities.ListaEntity;
 import br.com.aceleragep.listas.restapi.services.ItemService;
 import br.com.aceleragep.listas.restapi.services.ListaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Item")
 @RestController
 @RequestMapping("/api/itens")
 @CrossOrigin("*")
@@ -36,9 +40,10 @@ public class ItemController {
 	@Autowired
 	private ItemConvert itemConvert;
 	
+	@Operation(summary = "Cadastrar novo item", description = "Cadastrar novo item em uma lista")
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public ItemOutput cadastraItem(@RequestBody @Valid ItemInput itemInput) {
+	public ItemOutput cadastraItem(@Parameter(description = "Informações para o cadastro de um novo item") @RequestBody @Valid ItemInput itemInput) {
 		ItemEntity itemEntity = itemConvert.inputToEntity(itemInput);
 		convertListaId(itemInput, itemEntity);
 		itemEntity.setConcluido(false);
@@ -46,8 +51,9 @@ public class ItemController {
 		return itemConvert.entityToOutput(itemCadastrado);
 	}
 	
+	@Operation(summary = "Alterar item", description = "Alterar informações do item")
 	@PutMapping("/{id}")
-	public ItemOutput alteraItem(@PathVariable Long id, @RequestBody @Valid ItemInput itemInput) {
+	public ItemOutput alteraItem(@Parameter(description = "Id do item", example = "1") @PathVariable Long id, @Parameter(description = "Informações para a alteração de um item") @RequestBody @Valid ItemInput itemInput) {
 		ItemEntity itemEncontrado = itemService.buscaItemPorId(id);
 		itemConvert.copyInputToEntity(itemInput, itemEncontrado);
 		convertListaId(itemInput, itemEncontrado);
@@ -55,22 +61,25 @@ public class ItemController {
 		return itemConvert.entityToOutput(itemAlterado);
 	}
 	
+	@Operation(summary = "Deletar item", description = "Deletar item da lista")
 	@DeleteMapping("/{id}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
-	public void removerItem(@PathVariable Long id) {
+	public void removerItem(@Parameter(description = "Id do item", example = "1") @PathVariable Long id) {
 		ItemEntity itemEncontrado = itemService.buscaItemPorId(id);
 		itemService.remove(itemEncontrado);
 	}
 	
+	@Operation(summary = "Marcar item concluído", description = "Marcar item como concluído")
 	@PutMapping("/{id}/marca-concluido")
-	public ItemOutput marcaItemConcluido(@PathVariable Long id) {
+	public ItemOutput marcaItemConcluido(@Parameter(description = "Id do item", example = "1") @PathVariable Long id) {
 		ItemEntity itemEntity = itemService.buscaItemPorId(id);
 		ItemEntity itemAlterado = itemService.marcaConcluido(itemEntity);
 		return itemConvert.entityToOutput(itemAlterado);
 	}
 	
+	@Operation(summary = "Marcar item não concluído", description = "Marcar item como não concluído")
 	@PutMapping("/{id}/marca-nao-concluido")
-	public ItemOutput marcaItemNaoConcluido(@PathVariable Long id) {
+	public ItemOutput marcaItemNaoConcluido(@Parameter(description = "Id do item", example = "1") @PathVariable Long id) {
 		ItemEntity itemEntity = itemService.buscaItemPorId(id);
 		ItemEntity itemAlterado = itemService.marcaNaoConcluido(itemEntity);
 		return itemConvert.entityToOutput(itemAlterado);
