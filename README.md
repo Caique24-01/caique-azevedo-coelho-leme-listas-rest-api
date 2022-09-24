@@ -3,6 +3,10 @@
 ### Tecnologias: 
 Spring boot, Hibernate, MySQL, Java 17, Swagger
 
+### Necessário: 
+- Ter o Java JDK instalado
+- Ter o Maven instalado 
+
 ### Como importar e rodar o projeto: 
 
 1º clonar o repositório: *git clone https://github.com/Caique24-01/caique-azevedo-coelho-leme-listas-rest-api.git*
